@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Registrasi</title>
+
+<style>
+body {
+  font-family: Arial;
+  background: #f2f2f2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* BOX */
+.box {
+  background: white;
+  padding: 25px;
+  width: 340px;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+/* TITLE */
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* LABEL */
+label {
+  display: block;
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+/* INPUT */
+input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+/* GENDER */
+.gender {
+  margin-top: 5px;
+}
+
+.gender input {
+  width: auto;
+  margin-right: 5px;
+}
+
+/* BUTTON */
+button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 20px;
+  background: blue;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background: darkblue;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="box">
+
+  <h2>📝 Registrasi Pasien</h2>
+
+  <!-- NAMA -->
+  <label>Nama Lengkap</label>
+  <input id="nama" placeholder="Masukkan nama">
+
+  <!-- TANGGAL LAHIR -->
+  <label>Tanggal Lahir</label>
+  <input id="tgl" type="date">
+
+  <!-- UMUR -->
+  <label>Umur</label>
+  <input id="umur" type="number" placeholder="(Opsional)">
+
+  <!-- GENDER -->
+  <label>Jenis Kelamin</label>
+  <div class="gender">
+    <input type="radio" name="gender" value="Laki-laki"> Laki-laki
+    <input type="radio" name="gender" value="Perempuan"> Perempuan
+  </div>
+
+  <!-- NO TELP -->
+  <label>No Telepon</label>
+  <input id="telp" placeholder="08xxxxxxxxxx">
+
+  <!-- BUTTON -->
+  <button onclick="daftar()">Daftar</button>
+
+</div>
+
+<script>
+function daftar(){
+
+  let nama = document.getElementById("nama").value;
+  let tgl = document.getElementById("tgl").value;
+  let umur = document.getElementById("umur").value;
+  let telp = document.getElementById("telp").value;
+  let gender = document.querySelector('input[name="gender"]:checked');
+
+  if(!nama || !tgl || !telp || !gender){
+    alert("Isi data wajib dulu!");
+    return;
+  }
+
+  let pasien = {
+    nama: nama,
+    tanggal_lahir: tgl,
+    umur: umur || "-",
+    gender: gender.value,
+    telp: telp
+  };
+
+  localStorage.setItem("pasien", JSON.stringify(pasien));
+
+  window.location.href = "layanan.html";
+}
+</script>
+
+</body>
+</html>

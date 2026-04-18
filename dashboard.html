@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Dashboard</title>
+
+<style>
+body {
+  font-family: Arial;
+  background: #f2f2f2;
+  display: flex;
+  justify-content: center;
+}
+
+.box {
+  background: white;
+  width: 420px;
+  padding: 20px;
+  border-radius: 10px;
+  margin-top: 20px;
+}
+
+.section {
+  margin-bottom: 15px;
+}
+
+.title {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.item {
+  border-bottom: 1px solid #ddd;
+  padding: 5px 0;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.reset { background: red; color: white; }
+.back { background: blue; color: white; }
+</style>
+</head>
+
+<body>
+
+<div class="box">
+
+<h2>📊 Dashboard</h2>
+
+<!-- ================= PASIEN ================= -->
+<div class="section">
+  <div class="title">👤 Data Pasien</div>
+  <div id="pasien"></div>
+</div>
+
+<!-- ================= PESANAN ================= -->
+<div class="section">
+  <div class="title">🛒 Pesanan</div>
+  <div id="order"></div>
+</div>
+
+<!-- ================= METODE ================= -->
+<div class="section">
+  <div class="title">🚚 Metode Pengambilan</div>
+  <div id="metode"></div>
+</div>
+
+<!-- ================= STATUS ================= -->
+<div class="section">
+  <div class="title">📦 Status</div>
+  <div id="status">Diproses...</div>
+</div>
+
+<button class="back" onclick="ulang()">🔄 Pesan Lagi</button>
+<button class="reset" onclick="reset()">❌ Reset Data</button>
+
+</div>
+
+<script>
+
+// ================= DATA =================
+let pasienData = JSON.parse(localStorage.getItem("pasien")) || {};
+let orderData = JSON.parse(localStorage.getItem("order")) || [];
+let metodeAmbil = localStorage.getItem("metodeAmbil") || "-";
+
+// ================= TAMPIL PASIEN =================
+pasien.innerHTML = `
+Nama: ${pasienData.nama || "-"} <br>
+Umur: ${pasienData.umur || "-"}
+`;
+
+// ================= TAMPIL ORDER =================
+if(orderData.length > 0){
+
+  let html = "";
+
+  orderData.forEach(o=>{
+    html += `
+      <div class="item">
+        ${o.nama} (${o.qty}x)
+      </div>
+    `;
+  });
+
+  order.innerHTML = html;
+
+}else{
+  order.innerHTML = "Tidak ada pesanan";
+}
+
+// ================= METODE =================
+if(metodeAmbil === "pickup"){
+  metode.innerText = "Ambil di Apotek";
+}
+else if(metodeAmbil === "delivery"){
+  metode.innerText = "Diantar";
+}
+
+// ================= STATUS SIMULASI =================
+setTimeout(()=>{
+  status.innerText = "📦 Sedang dikemas...";
+},2000);
+
+setTimeout(()=>{
+  status.innerText = "Sedang dikirim...";
+},4000);
+
+setTimeout(()=>{
+  status.innerText = "Pesanan selesai";
+},6000);
+
+// ================= ULANG =================
+function ulang(){
+  window.location.href = "register.html";
+}
+
+// ================= RESET =================
+function reset(){
+  localStorage.clear();
+  alert("Data dihapus");
+  window.location.href = "register.html";
+}
+
+</script>
+
+</body>
+</html>

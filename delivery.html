@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Pengiriman</title>
+
+<style>
+body {
+  font-family: Arial;
+  background: #f2f2f2;
+  display: flex;
+  justify-content: center;
+}
+
+.box {
+  background: white;
+  width: 420px;
+  padding: 20px;
+  border-radius: 10px;
+  margin-top: 20px;
+}
+
+.card {
+  border: 1px solid #ddd;
+  padding: 12px;
+  margin-top: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.card.active {
+  border: 2px solid blue;
+  background: #e7f1ff;
+}
+
+.total {
+  margin-top: 15px;
+  font-weight: bold;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 15px;
+  background: green;
+  color: white;
+  border: none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+
+<h2>🚚 Pengiriman</h2>
+
+<div id="content"></div>
+
+<div id="hasil"></div>
+
+<button onclick="selesai()">Selesaikan Pesanan</button>
+
+</div>
+
+<script>
+
+// ================= DATA =================
+let metode = localStorage.getItem("metodeAmbil");
+let subtotal = Number(localStorage.getItem("subtotal")) || 0;
+
+// ================= PICKUP =================
+if(metode === "pickup"){
+
+  content.innerHTML = `
+    <h3>🏪 Ambil di Apotek</h3>
+    <p><b>Apotek Kita</b></p>
+    <p>Jl. Terusan Ryacudu, No. XXX, Way Huwi</p>
+    <p>⏰ Jam buka: 08.00 - 21.00</p>
+
+    <p class="total">Total: Rp ${subtotal}</p>
+  `;
+}
+
+// ================= DELIVERY =================
+else{
+
+  content.innerHTML = `
+    <h3>Pilih Kurir</h3>
+
+    <div class="card" onclick="pilihKurir('Gojek',10000,this)">
+      🚚 Gojek <br> Ongkir Rp10.000
+    </div>
+
+    <div class="card" onclick="pilihKurir('Grab',12000,this)">
+      🚚 Grab <br> Ongkir Rp12.000
+    </div>
+  `;
+}
+
+// ================= PILIH KURIR =================
+let ongkir = 0;
+let kurir = "";
+
+function pilihKurir(nama, biaya, el){
+
+  kurir = nama;
+  ongkir = biaya;
+
+  document.querySelectorAll(".card")
+    .forEach(c => c.classList.remove("active"));
+
+  el.classList.add("active");
+
+  let total = subtotal + ongkir;
+
+  hasil.innerHTML = `
+    <p>Subtotal: Rp ${subtotal}</p>
+    <p>Ongkir: Rp ${ongkir}</p>
+    <p class="total">Total: Rp ${total}</p>
+  `;
+}
+
+// ================= SELESAI =================
+function selesai(){
+
+  if(metode === "delivery" && !kurir){
+    alert("Pilih kurir dulu!");
+    return;
+  }
+
+  alert("Pesanan berhasil ✔");
+
+  window.location.href = "dashboard.html";
+}
+
+</script>
+
+</body>
+</html>

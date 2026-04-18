@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Checkout Obat</title>
+
+<style>
+body {
+  font-family: Arial;
+  background: #f2f2f2;
+  display: flex;
+  justify-content: center;
+}
+
+.box {
+  background: white;
+  width: 420px;
+  padding: 15px;
+  border-radius: 10px;
+  margin-top: 20px;
+}
+
+.item {
+  border-bottom: 1px solid #ddd;
+  padding: 10px 0;
+}
+
+.card {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.card.active {
+  border: 2px solid blue;
+  background: #e7f1ff;
+}
+
+button {
+  padding: 5px 10px;
+  margin: 2px;
+}
+
+.total {
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+.checkoutBtn {
+  width: 100%;
+  padding: 12px;
+  background: green;
+  color: white;
+  border: none;
+  margin-top: 15px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+
+<h2>🛒 Checkout Obat</h2>
+
+<div id="list"></div>
+
+<p class="total" id="subtotal"></p>
+
+<h3>Pilih Pengambilan</h3>
+
+<div class="card" onclick="pilihMetode('delivery',this)">
+  🚚 Diantar ke rumah
+</div>
+
+<div class="card" onclick="pilihMetode('pickup',this)">
+  🏪 Ambil di apotek
+</div>
+
+<button class="checkoutBtn" onclick="lanjut()">Lanjut 🚀</button>
+
+</div>
+
+<script>
+
+// ================= DATA =================
+let resep = JSON.parse(localStorage.getItem("resep"));
+
+if(!resep){
+  resep = [
+    {nama:"Paracetamol", harga:5000, qty:1},
+    {nama:"Vitamin C", harga:7000, qty:1}
+  ];
+}
+
+resep = resep.map(r => ({
+  ...r,
+  qty: r.qty || 1
+}));
+
+// ================= TAMPIL =================
+function tampil(){
+
+  list.innerHTML = "";
+
+  resep.forEach((r, i)=>{
+    list.innerHTML += `
+      <div class="item">
+        <b>${r.nama}</b><br>
+        Rp ${r.harga} x ${r.qty}<br>
+
+        <button onclick="kurang(${i})">-</button>
+        <button onclick="tambah(${i})">+</button>
+      </div>
+    `;
+  });
+
+  hitung();
+}
+
+// ================= QTY =================
+function tambah(i){
+  resep[i].qty++;
+  tampil();
+}
+
+function kurang(i){
+  if(resep[i].qty > 1){
+    resep[i].qty--;
+  }
+  tampil();
+}
+
+// ================= HITUNG =================
+function hitung(){
+
+  let sub = 0;
+
+  resep.forEach(r=>{
+    sub += r.harga * r.qty;
+  });
+
+  subtotal.innerText = "Subtotal: Rp " + sub;
+
+  localStorage.setItem("subtotal", sub);
+  localStorage.setItem("order", JSON.stringify(resep));
+}
+
+// ================= PILIH METODE =================
+let metode = "";
+
+function pilihMetode(m, el){
+
+  metode = m;
+
+  document.querySelectorAll(".card")
+    .forEach(c => c.classList.remove("active"));
+
+  el.classList.add("active");
+}
+
+// ================= LANJUT =================
+function lanjut(){
+
+  if(!metode){
+    alert("Pilih metode pengambilan dulu!");
+    return;
+  }
+
+  localStorage.setItem("metodeAmbil", metode);
+
+  // SEMUA KE DELIVERY
+  window.location.href = "delivery.html";
+}
+
+tampil();
+
+</script>
+
+</body>
+</html>

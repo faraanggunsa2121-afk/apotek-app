@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Pilih Obat</title>
+
+<style>
+body {
+  font-family: Arial;
+  background: #f2f2f2;
+  display: flex;
+  justify-content: center;
+}
+
+.box {
+  background: white;
+  width: 420px;
+  padding: 20px;
+  border-radius: 10px;
+  margin-top: 20px;
+}
+
+.item {
+  border: 1px solid #ddd;
+  padding: 10px;
+  margin-top: 10px;
+  border-radius: 8px;
+}
+
+button {
+  padding: 5px 10px;
+  margin-top: 5px;
+}
+
+.checkoutBtn {
+  width: 100%;
+  padding: 12px;
+  margin-top: 15px;
+  background: green;
+  color: white;
+  border: none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+
+<h2>💊 Pilih Obat</h2>
+
+<div id="list"></div>
+
+<button class="checkoutBtn" onclick="checkout()">Lanjut ke Checkout 🛒</button>
+
+</div>
+
+<script>
+
+// ================= DATA OBAT =================
+let obat = [
+  {nama:"Paracetamol", harga:5000},
+  {nama:"Vitamin C", harga:7000},
+  {nama:"Amoxicillin", harga:10000},
+  {nama:"Omeprazole", harga:8000},
+  {nama:"Loratadine", harga:6000}
+];
+
+// ================= KERANJANG =================
+let keranjang = [];
+
+// ================= TAMPIL =================
+function tampil(){
+
+  list.innerHTML = "";
+
+  obat.forEach((o, i)=>{
+
+    list.innerHTML += `
+      <div class="item">
+        <b>${o.nama}</b><br>
+        Rp ${o.harga}<br>
+
+        <button onclick="tambah(${i})">+ Tambah</button>
+      </div>
+    `;
+  });
+
+}
+
+// ================= TAMBAH =================
+function tambah(i){
+
+  let ada = keranjang.find(k => k.nama === obat[i].nama);
+
+  if(ada){
+    ada.qty++;
+  } else {
+    keranjang.push({
+      nama: obat[i].nama,
+      harga: obat[i].harga,
+      qty: 1
+    });
+  }
+
+  alert(obat[i].nama + " ditambahkan");
+}
+
+// ================= CHECKOUT =================
+function checkout(){
+
+  if(keranjang.length === 0){
+    alert("Pilih obat dulu!");
+    return;
+  }
+
+  localStorage.setItem("resep", JSON.stringify(keranjang));
+
+  window.location.href = "checkout.html";
+}
+
+tampil();
+
+</script>
+
+</body>
+</html>

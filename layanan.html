@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Pilih Layanan</title>
+
+<style>
+body {
+  font-family: Arial;
+  background: #f2f2f2;
+  margin: 0;
+}
+
+.container {
+  max-width: 420px;
+  margin: auto;
+  padding: 20px;
+}
+
+h2 {
+  text-align: center;
+}
+
+.user {
+  background: #e7f1ff;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  text-align: center;
+}
+
+.card {
+  background: white;
+  padding: 15px;
+  margin-top: 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: 0.2s;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.card:hover {
+  transform: scale(1.02);
+}
+
+.title {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.desc {
+  font-size: 13px;
+  color: gray;
+  margin-top: 5px;
+}
+
+.price {
+  margin-top: 8px;
+  font-weight: bold;
+  color: green;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 15px;
+  border: none;
+  border-radius: 6px;
+  background: #0d6efd;
+  color: white;
+  cursor: pointer;
+}
+
+button:disabled {
+  background: gray;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <h2>🩺 Pilih Layanan</h2>
+
+  <!-- 👤 DATA PASIEN -->
+  <div class="user" id="userBox"></div>
+
+  <!-- 💬 CHAT -->
+  <div class="card" onclick="pilih('chat')">
+    <div class="title">💬 Chat Apoteker</div>
+    <div class="desc">Konsultasi langsung via chat dengan apoteker</div>
+    <div class="price">Rp 10.000</div>
+  </div>
+
+  <!-- 💊 BELI OBAT -->
+  <div class="card" onclick="pilih('obat')">
+    <div class="title">💊 Beli Obat Online</div>
+    <div class="desc">Pesan obat tanpa konsultasi</div>
+    <div class="price">Harga sesuai obat</div>
+  </div>
+
+  <!-- 📞 WHATSAPP -->
+  <div class="card" onclick="pilih('wa')">
+    <div class="title">📞 Konsultasi WhatsApp</div>
+    <div class="desc">Langsung chat apoteker via WhatsApp</div>
+    <div class="price">Gratis</div>
+  </div>
+
+  <!-- 🚨 DARURAT -->
+  <div class="card" onclick="pilih('darurat')">
+    <div class="title">🚨 Kondisi Darurat</div>
+    <div class="desc">Segera hubungi fasilitas kesehatan</div>
+    <div class="price">Prioritas</div>
+  </div>
+
+  <button id="lanjutBtn" onclick="lanjut()" disabled>
+    Lanjutkan →
+  </button>
+
+</div>
+
+<script>
+
+// ======================
+// AMBIL DATA PASIEN
+// ======================
+let pasien = JSON.parse(localStorage.getItem("pasien")) || {};
+
+document.getElementById("userBox").innerHTML =
+  "👤 " + (pasien.nama || "User");
+
+// ======================
+// PILIH LAYANAN
+// ======================
+let layananDipilih = "";
+
+function pilih(layanan){
+
+  layananDipilih = layanan;
+
+  // aktifkan tombol lanjut
+  document.getElementById("lanjutBtn").disabled = false;
+
+  // simpan pilihan
+  localStorage.setItem("layananDipilih", layanan);
+
+}
+
+// ======================
+// LANJUTKAN
+// ======================
+function lanjut(){
+
+  if(layananDipilih === "chat"){
+    window.location.href = "payment.html";
+  }
+
+  else if(layananDipilih === "obat"){
+    window.location.href = "obat.html";
+  }
+
+  else if(layananDipilih === "wa"){
+    let no = "0812xxxxxx";
+    let url = "https://wa.me/628xxx" + no.substring(1) +
+              "?text=Halo saya ingin konsultasi";
+    window.open(url, "_blank");
+  }
+
+  else if(layananDipilih === "darurat"){
+    alert("🚨 Segera ke RS atau hubungi 119!");
+  }
+
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Konsultasi Apotek</title>
+
+<style>
+body {
+  font-family: Arial;
+  background: #f2f2f2;
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.box {
+  width: 420px;
+  background: white;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+#chatbox {
+  height: 350px;
+  overflow-y: auto;
+  border: 1px solid #ccc;
+  padding: 10px;
+  background: #fafafa;
+  border-radius: 8px;
+}
+
+.pasien {
+  text-align: right;
+  background: #d1f0ff;
+  margin: 5px;
+  padding: 6px;
+  border-radius: 8px;
+}
+
+.apoteker {
+  text-align: left;
+  background: #dfffdc;
+  margin: 5px;
+  padding: 6px;
+  border-radius: 8px;
+}
+
+.typing {
+  font-style: italic;
+  color: gray;
+  margin: 5px;
+}
+
+input {
+  width: 100%;
+  padding: 10px;
+  margin-top: 10px;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  margin-top: 8px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+#checkoutBtn { background: orange; color: white; display: none; }
+#waBtn { background: green; color: white; display: none; }
+</style>
+</head>
+
+<body>
+
+<div class="box">
+
+  <div id="chatbox"></div>
+
+  <input type="text" id="keluhan" placeholder="Contoh: demam, batuk, pilek">
+
+  <button onclick="kirim()">Kirim</button>
+
+  <button id="checkoutBtn" onclick="checkout()">💊 Tebus Obat</button>
+
+  <button id="waBtn" onclick="wa()">💬 Konsultasi WhatsApp</button>
+
+</div>
+
+<script>
+
+let chatbox = document.getElementById("chatbox");
+let resep = [];
+
+// ======================
+// AMBIL DATA PASIEN
+// ======================
+let pasien = JSON.parse(localStorage.getItem("pasien")) || {};
+
+tambahPesan("👩‍⚕️ Halo " + (pasien.nama || "") + ", silakan tulis keluhan Anda", "apoteker");
+
+// ======================
+// TAMBAH PESAN
+// ======================
+function tambahPesan(teks, tipe){
+  chatbox.innerHTML += `<div class='${tipe}'>${teks}</div>`;
+  chatbox.scrollTop = chatbox.scrollHeight;
+}
+
+// ======================
+// TYPING EFFECT
+// ======================
+function typing(callback){
+  let t = document.createElement("div");
+  t.className = "typing";
+  t.innerText = "Apoteker sedang mengetik...";
+  chatbox.appendChild(t);
+
+  chatbox.scrollTop = chatbox.scrollHeight;
+
+  setTimeout(() => {
+    t.remove();
+    callback();
+  }, 1500);
+}
+
+// ======================
+// KIRIM
+// ======================
+function kirim(){
+
+  let isi = document.getElementById("keluhan").value.toLowerCase().trim();
+  if(!isi) return;
+
+  tambahPesan(isi, "pasien");
+
+  document.getElementById("keluhan").value = "";
+
+  // reset tombol
+  checkoutBtn.style.display = "none";
+  waBtn.style.display = "none";
+
+  typing(() => respon(isi));
+}
+
+// ======================
+// LOGIKA RESPON (MULTI GEJALA)
+// ======================
+function respon(isi){
+
+  let hasil = [];
+  resep = [];
+
+  if(isi.includes("demam")){
+    hasil.push("Demam ringan");
+    resep.push({nama:"Paracetamol", harga:5000});
+  }
+
+  if(isi.includes("batuk")){
+    hasil.push("Batuk");
+    resep.push({nama:"Ambroxol", harga:7000});
+  }
+
+  if(isi.includes("pilek")){
+    hasil.push("Pilek");
+    resep.push({nama:"Loratadine", harga:6000});
+  }
+
+  if(isi.includes("maag")){
+    hasil.push("Maag");
+    resep.push({nama:"Omeprazole", harga:8000});
+  }
+
+  // ======================
+  // JIKA ADA HASIL
+  // ======================
+  if(hasil.length > 0){
+
+    tambahPesan("Baik, saya analisis dulu ya...", "apoteker");
+
+    setTimeout(() => {
+      tambahPesan("Kemungkinan: " + hasil.join(", "), "apoteker");
+    }, 1200);
+
+    setTimeout(() => {
+
+      let teksResep = "💊 Resep:<br>";
+
+      resep.forEach(r=>{
+        teksResep += "- " + r.nama + "<br>";
+      });
+
+      tambahPesan(teksResep, "apoteker");
+
+      // simpan ke localStorage
+      localStorage.setItem("resep", JSON.stringify(resep));
+
+      checkoutBtn.style.display = "block";
+
+    }, 2500);
+
+  }
+
+  // ======================
+  // JIKA TIDAK DIKENALI
+  // ======================
+  else{
+
+    tambahPesan("⚠️ Gejala belum bisa dikenali.", "apoteker");
+
+    setTimeout(()=>{
+      tambahPesan("Silakan konsultasi langsung dengan apoteker.", "apoteker");
+      waBtn.style.display = "block";
+    },1000);
+
+  }
+
+}
+
+// ======================
+// CHECKOUT
+// ======================
+function checkout(){
+  window.location.href = "checkout.html";
+}
+
+// ======================
+// WHATSAPP
+// ======================
+function wa(){
+  let no = "081234567890";
+  let url = "https://wa.me/62" + no.substring(1) +
+            "?text=Halo saya ingin konsultasi lebih lanjut";
+  window.open(url, "_blank");
+}
+
+</script>
+
+</body>
+</html>

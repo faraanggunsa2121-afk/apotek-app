@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Pembayaran</title>
+
+<style>
+body {
+  font-family: Arial;
+  background: #f2f2f2;
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+}
+
+.box {
+  background: white;
+  padding: 20px;
+  width: 380px;
+  border-radius: 12px;
+}
+
+.card {
+  border: 1px solid #ddd;
+  padding: 12px;
+  margin-top: 10px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.card.active {
+  border: 2px solid blue;
+  background: #e7f1ff;
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 15px;
+  background: blue;
+  color: white;
+  border: none;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+
+<h2>💳 Pembayaran Konsultasi</h2>
+
+<p>💬 Chat Apoteker</p>
+<p><b>Rp 10.000</b></p>
+
+<h4>Pilih Metode</h4>
+
+<div class="card" onclick="pilih('DANA',this)">DANA</div>
+<div class="card" onclick="pilih('OVO',this)">OVO</div>
+<div class="card" onclick="pilih('GoPay',this)">GoPay</div>
+
+<button onclick="bayar()">Bayar</button>
+
+</div>
+
+<script>
+
+let metode = "";
+
+function pilih(m, el){
+  metode = m;
+
+  document.querySelectorAll(".card")
+    .forEach(c => c.classList.remove("active"));
+
+  el.classList.add("active");
+}
+
+function bayar(){
+
+  if(!metode){
+    alert("Pilih metode dulu!");
+    return;
+  }
+
+  // simpan metode
+  localStorage.setItem("metode", metode);
+
+  if(metode === "DANA"){
+    window.location.href = "dana.html";
+  }
+  else if(metode === "OVO"){
+    window.location.href = "ovo.html";
+  }
+  else if(metode === "GoPay"){
+    window.location.href = "gopay.html";
+  }
+
+}
+
+</script>
+
+</body>
+</html>
